@@ -1,4 +1,4 @@
-import {openedImageModal} from './modal';
+import {openedImageModal} from './index.js';
 
 export const initialCards = [
     {
@@ -28,9 +28,8 @@ export const initialCards = [
 ];
 
 const cardTemplate = document.querySelector('#card-template').content;
-const cardList = document.querySelector('.places__list');
 
-function createCard(cardInfo, deleteCard, likeCard, openedImageModal) {
+export function createCard(cardInfo, deleteCard, likeCard, openedImageModal) {
   const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardImage = cardItem.querySelector('.card__image');
   const cardTitle = cardItem.querySelector('.card__title');
@@ -60,12 +59,6 @@ export function likeCard(evt) {
   eventTarget.classList.toggle('card__like-button_is-active');
 }
 
-export function showCards() {
- initialCards.forEach(cardInfo =>
-  cardList.append(createCard(cardInfo, deleteCard, likeCard, openedImageModal))
-  );
-}
-
 export function createNewCard(name, link) {
   const cardInfo = {};
   cardInfo.name = name;
@@ -74,8 +67,4 @@ export function createNewCard(name, link) {
   
   const newCard = createCard(initialCards[initialCards.length-1], deleteCard, likeCard, openedImageModal);
   return newCard;
-}
-
-export function addNewCard(newCard) {
-  cardList.prepend(newCard);
 }
