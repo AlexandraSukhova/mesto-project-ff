@@ -3,6 +3,7 @@
 
 // Поработайте над UX. При редактировании профиля уведомите пользователя о процессе загрузки, 
 // поменяв текст кнопки на: «Сохранение...», пока данные загружаются
+import {checkResponse} from './utils/utils.js'
 
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-12',
@@ -12,126 +13,74 @@ const config = {
   }
 }
 
+function requestToAPI(config, endpoint, options) {
+  return fetch(`${config.baseUrl}/` + endpoint, options)
+  .then(checkResponse)
+}
+
 export const getProfileInfo = () => {
-  return fetch(`${config.baseUrl}/users/me`, {
+  return requestToAPI(config, 'users/me', {
     method: 'GET',
     headers: config.headers
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+  });
 }
 
 export const getInitialCards = () => {
-  return fetch(`${config.baseUrl}/cards`, {
+ return requestToAPI(config, 'cards', {
+    method: 'GET',
     headers: config.headers
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+  });
 }
-
 
 export const deleteMyCard = (cardId) => {
-  return fetch(`${config.baseUrl}/cards/` + cardId, {
+  return requestToAPI(config, 'cards/' + cardId, {
     method: 'DELETE',
     headers: config.headers
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+  });
 }
 
-
-export const postNewCard = (inputNameValue, inputLinkValue) => {
-  return  fetch(`${config.baseUrl}/cards`, {
+export const postNewCard = (inputCardNameValue, inputCardLinkValue) => {
+  return requestToAPI(config, 'cards', {
     method: 'POST',
     headers: config.headers,
     body: JSON.stringify({
-      name: inputNameValue,
-      link: inputLinkValue
-    })
-  })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+          name: inputCardNameValue,
+          link: inputCardLinkValue
+        })
   });
 }
 
 export const updateProfileInfo = (inputEditNameValue, inputEditeDescriptionValue) => {
-  return  fetch(`${config.baseUrl}/users/me`, {
-  method: 'PATCH',
-  headers: config.headers,
-  body: JSON.stringify({
-    name: inputEditNameValue,
-    about: inputEditeDescriptionValue
-    })
-  })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+  return requestToAPI(config, 'users/me', {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+          name: inputEditNameValue,
+          about: inputEditeDescriptionValue
+        })
   });
 }
 
 export const sendLike = (cardId) => {
-  return  fetch(`${config.baseUrl}/cards/likes/` + cardId, {
+  return requestToAPI(config, 'cards/likes/' + cardId, {
     method: 'PUT',
     headers: config.headers
-    })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-  
-      return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
 }
 
 export const deleteLike = (cardId) => {
-  return  fetch(`${config.baseUrl}/cards/likes/` + cardId, {
+  return requestToAPI(config, 'cards/likes/' + cardId, {
     method: 'DELETE',
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status}`);
-  });
 }
 
 export const updateProfileAvatar = (inputUpdateAvatarValue) => {
-  return  fetch(`${config.baseUrl}/users/me/avatar`, {
+  return requestToAPI(config, 'users/me/avatar', {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       avatar: inputUpdateAvatarValue
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status}`);
-  });
 }

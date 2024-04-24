@@ -22,12 +22,12 @@ export const clearValidation = (formElement, validationConfig) => {
   const formButton = formElement.querySelector(validationConfig.submitButtonSelector);
   const formInput = makeArray(formElement, validationConfig.inputSelector);
   formInput.forEach((input) => {
-    hideInputError(input, formElement);
+    hideInputError(input, formElement, validationConfig);
   });
-  toggleButtonState(formInput, formButton);
+  toggleButtonState(formInput, formButton, validationConfig);
 }
 
-const showInputError = (formInput, formElement, errorMessage) => {
+const showInputError = (formInput, formElement, errorMessage, validationConfig) => {
   const errorText = formElement.querySelector(`.${formInput.id}-error`);
 
   formInput.classList.add(validationConfig.inputErrorClass);
@@ -35,7 +35,7 @@ const showInputError = (formInput, formElement, errorMessage) => {
   errorText.textContent = errorMessage;
 } //показывает валидность
 
-const hideInputError = (formInput, formElement) => {
+const hideInputError = (formInput, formElement, validationConfig) => {
   const errorText = formElement.querySelector(`.${formInput.id}-error`);
 
   formInput.classList.remove(validationConfig.inputErrorClass);
@@ -52,10 +52,10 @@ const isValid = (formInput, formElement) => {
   }
 
   if(!formInput.validity.valid) {
-    showInputError(formInput, formElement, formInput.validationMessage);
+    showInputError(formInput, formElement, formInput.validationMessage, validationConfig);
   }
   else {
-    hideInputError(formInput, formElement);
+    hideInputError(formInput, formElement, validationConfig);
   }
 } // проверяет на валидность
 
@@ -64,7 +64,7 @@ function hasInvalidInput(inputList) {
   return inputList.some((formInput) => !formInput.validity.valid)
 };
 
-function toggleButtonState(inputList, formButton) {
+function toggleButtonState(inputList, formButton, validationConfig) {
   if(hasInvalidInput(inputList)) {
     formButton.disabled = true;
     formButton.classList.add(validationConfig.inactiveButtonClass);
@@ -75,16 +75,16 @@ function toggleButtonState(inputList, formButton) {
   }
 }
 
-const setEventListeners = (formElement) => {
+const setEventListeners = (formElement, validationConfig) => {
   const inputList = makeArray(formElement, validationConfig.inputSelector);
   const formButton = formElement.querySelector(validationConfig.submitButtonSelector);
   
-  toggleButtonState(inputList, formButton);
+  toggleButtonState(inputList, formButton, validationConfig);
 
   inputList.forEach((input) => {
     input.addEventListener('input', () => { 
       isValid(input, formElement);
-      toggleButtonState(inputList, formButton);
+      toggleButtonState(inputList, formButton, validationConfig);
     });
   })
 }
@@ -93,7 +93,7 @@ const setEventListeners = (formElement) => {
 export const enableValidation = (validationConfig) => {
   const formList = makeArray(document, validationConfig.formSelector);
 
-  formList.forEach((form) => {
-    setEventListeners(form);
+  formList.forEach((formElement) => {
+    setEventListeners(formElement, validationConfig);
   })
 }
