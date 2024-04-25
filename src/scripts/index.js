@@ -171,7 +171,6 @@ popupConfim.addEventListener('submit', handleConfirmSubmit);
 
 Promise.all([getProfileInfo(), getInitialCards()])
 .then(([pageInfo, cardsInfo]) => {
-  console.log(cardsInfo)
   fillProfile(pageInfo);
   showCards(cardsInfo);
 })
