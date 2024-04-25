@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import {createCard, deleteCard, likeCard, popupConfim} from './card.js';
+import {createCard, deleteCard, likeCard, popupConfim, deletedCardId} from './card.js';
 import {openModal, closeModal} from './modal.js';
 import {enableValidation, clearValidation, validationConfig} from './validation.js';
 import {getInitialCards, deleteMyCard, updateProfileInfo, postNewCard, updateProfileAvatar, getProfileInfo} from './api.js'
@@ -146,23 +146,32 @@ function handleMakeNewCardSubmit(evt) {
     .then(cardData => handleFormCard(cardData));
   }
 
-  handleSubmit(makeRequest, evt, 'Созданение...', 'Создать');
+  handleSubmit(makeRequest, evt, 'Созданение...');
 }
 
-popupAddNewCard.addEventListener('submit', evt => {
-  handleMakeNewCardSubmit(evt)
-});
+function handleConfirmSubmit(evt) {
+  function makeRequest() {
+    return deleteMyCard(deletedCardId)
+    .then(() => {
+      closeModal(popupConfim);
+      deleteCard(deletedCardId);
+    });
+  }
 
-popupEditProfile.addEventListener('submit', evt => {
-  handleProfileFormSubmit(evt);
-});
+  handleSubmit(makeRequest, evt, 'Удаление...');
+}
 
-popupUpdateAvatar.addEventListener('submit', (evt) => { 
-  handleProfileAvatarSubmit(evt);
-});
+popupAddNewCard.addEventListener('submit', handleMakeNewCardSubmit);
+
+popupEditProfile.addEventListener('submit', handleProfileFormSubmit);
+
+popupUpdateAvatar.addEventListener('submit', handleProfileAvatarSubmit);
+
+popupConfim.addEventListener('submit', handleConfirmSubmit);
 
 Promise.all([getProfileInfo(), getInitialCards()])
 .then(([pageInfo, cardsInfo]) => {
+  console.log(cardsInfo)
   fillProfile(pageInfo);
   showCards(cardsInfo);
 })

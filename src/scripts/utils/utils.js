@@ -6,7 +6,7 @@ export function checkResponse(res) {
   return Promise.reject(res.status);
 }
 
-export function renderLoading(isLoading, button, loadingText='Сохранение...', buttonText='Сохранить') {
+export function renderLoading(isLoading, button, buttonText='Сохранить', loadingText='Сохранение...') {
   if(isLoading) {
     button.textContent = loadingText;
   } else {
@@ -14,14 +14,16 @@ export function renderLoading(isLoading, button, loadingText='Сохранени
   }
 }
 
-export function handleSubmit(request, evt, loadingText='Сохранение...', initialText = 'Сохранить') {
+export function handleSubmit(request, evt, loadingText='Сохранение...') {
   evt.preventDefault();
   const submitButton = evt.submitter;
-  renderLoading(true, submitButton, loadingText, initialText);
+  const initialText = submitButton.textContent;
+
+  renderLoading(true, submitButton, initialText, loadingText);
   request()
   .then(() => evt.target.reset())
   .catch((err) => {
     console.log(`Ошибка: ${err}`);
   })
-  .finally(() => renderLoading(false, submitButton, loadingText, initialText));
+  .finally(() => renderLoading(false, submitButton, initialText));
 }

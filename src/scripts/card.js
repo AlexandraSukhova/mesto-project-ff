@@ -1,6 +1,5 @@
-import { closeModal, openModal } from "./modal";
+import { openModal } from "./modal";
 import {sendLike, deleteLike, deleteMyCard} from './api.js'
-import {handleSubmit} from './utils/utils.js'
 
 export let deletedCardId
 export const popupConfim = document.querySelector('.popup_type_confirm');
@@ -32,7 +31,6 @@ export function createCard(cardInfo, functionsForCard, userId) {
     deletedCardId = cardInfo._id;
     cardItem.id = deletedCardId;
     openModal(popupConfim);
-    popupConfim.addEventListener('submit', handleConfirmSubmit);
   })
 
   cardImage.addEventListener('click', () => functionsForCard.openedImageModal(cardInfo.link, cardInfo.name));
@@ -78,17 +76,4 @@ export function likeCard(button, id, likeNumber) {
         console.log(`Ошибка: ${err}`);
       });
   }
-}
-
-function handleConfirmSubmit(evt) {
-  function makeRequest() {
-    return deleteMyCard(deletedCardId)
-    .then(() => {
-      closeModal(popupConfim);
-      deleteCard(deletedCardId);
-      popupConfim.removeEventListener('submit', handleConfirmSubmit);
-    });
-  }
-
-  handleSubmit(makeRequest, evt, 'Удаление...', 'Да');
 }
