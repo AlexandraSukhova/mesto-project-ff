@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import {createCard, deleteCard, likeCard, popupConfim, deletedCardId} from './card.js';
+import {createCard, deleteCard, likeCard, popupConfim, deletedCardId, deletedCard} from './card.js';
 import {openModal, closeModal} from './modal.js';
 import {enableValidation, clearValidation, validationConfig} from './validation.js';
 import {getInitialCards, deleteMyCard, updateProfileInfo, postNewCard, updateProfileAvatar, getProfileInfo} from './api.js'
@@ -154,7 +154,7 @@ function handleConfirmSubmit(evt) {
     return deleteMyCard(deletedCardId)
     .then(() => {
       closeModal(popupConfim);
-      deleteCard(deletedCardId);
+      deleteCard(deletedCard);
     });
   }
 

@@ -2,6 +2,7 @@ import { openModal } from "./modal";
 import {sendLike, deleteLike, deleteMyCard} from './api.js'
 
 export let deletedCardId
+export let deletedCard
 export const popupConfim = document.querySelector('.popup_type_confirm');
 export const cardTemplate = document.querySelector('#card-template').content;
 
@@ -27,9 +28,9 @@ export function createCard(cardInfo, functionsForCard, userId) {
 
   cardLikeButton.addEventListener('click', () => likeCard(cardLikeButton, cardInfo._id, likeNumber));
 
-  cardDeleteButton.addEventListener('click', () => {
+  cardDeleteButton.addEventListener('click', (evt) => {
     deletedCardId = cardInfo._id;
-    cardItem.id = deletedCardId;
+    deletedCard = evt.target.closest('.places__item');
     openModal(popupConfim);
   })
 
@@ -38,9 +39,8 @@ export function createCard(cardInfo, functionsForCard, userId) {
   return cardItem;
 }
 
-export function deleteCard(deletedCardId) {
-  const cardToDelete = document.getElementById(deletedCardId);
-  cardToDelete.remove();
+export function deleteCard(deletedCard) {
+  deletedCard.remove();
 }
 
 function activateDeleteButton(ownerId, button, userId) {
